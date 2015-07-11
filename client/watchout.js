@@ -6,7 +6,8 @@ var gameOptions = {
   radius: 10,
   numEnemies: 40,
   score: 0,
-  high: 0
+  high: 0,
+  collisions: 0
 };
 
 var gameBoard = d3.select(".board")
@@ -97,12 +98,13 @@ var hasCollision = function() {
     var enemyY = d3.select(this).attr('cy');
     // x diff
     // y diff
-    var xDiff = playerX - enemyX;
-    var yDiff = playerY - enemyY;
-    var distance = Math.sqrt(playerX * playerY + enemyX * enemyY);
+    var xDiff = enemyX - playerX;
+    var yDiff = enemyY - playerY;
+    var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     // distance (Pyth. theorem)
-    if (distance < gameOptions.radius) {
+    if (distance <= (gameOptions.radius * 2)) {
       collision = true;
+      gameOptions.collisions++;
     }
   });
   return collision;
@@ -114,7 +116,6 @@ var updateScore = function() {
   if (hasCollision()) {
     gameOptions.score = 0;
     d3.select(".current > span").text(gameOptions.score);
-    d3.select(".collisions > span").text('1');
   } else {
     gameOptions.score++;
     d3.select(".current > span").text(gameOptions.score);
@@ -123,9 +124,11 @@ var updateScore = function() {
     gameOptions.high = gameOptions.score;
     d3.select(".high > span").text(gameOptions.high);
   }
+  d3.select(".collisions > span").text(gameOptions.collisions);
+  console.log(gameOptions.collisions);
 }
 
-setInterval(updateScore, 100);
+setInterval(updateScore, 50);
 
 // d3.select('body').selectAll('div').data([8, 3, 7])
 //     .enter().append('div').style('opacity', 0)
