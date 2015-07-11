@@ -23,7 +23,7 @@ Feel free to use it if you like. */
 .board {
   height: 600px;
   width: 700px;
-  background-size: 100% 100%;
+  /*background-size: 100% 100%;*/
   background-repeat: no-repeat;
   overflow: hidden;
   margin: auto;

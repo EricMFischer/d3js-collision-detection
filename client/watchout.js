@@ -3,7 +3,8 @@
 var gameOptions = {
   width: 1000,
   height: 1000,
-  numEnemies: 40
+  numEnemies: 40,
+  score: 0
 };
 
 var gameBoard = d3.select(".board")
@@ -39,7 +40,7 @@ var enemies = gameBoard.selectAll("circle")
                   .attr('r',10)
                   .style("fill", "white")
                   .style("stroke", "grey")
-                  .style("stroke-width", 0.001);
+                  .style("stroke-width", 0.01);
 
 //createEnemies(gameOptions.numEnemies);
 
@@ -80,6 +81,26 @@ var drag = d3.behavior.drag()
             });
 
 player.call(drag);
+
+//-------------collisions----------------
+
+var hasCollision = function() {
+  return false;
+}
+
+//-------------scoreboard----------------
+
+var updateScore = function() {
+  if (hasCollision()) {
+    gameOptions.score = 0;
+    d3.select(".current > span").text(gameOptions.score);
+  } else {
+    gameOptions.score++;
+    d3.select(".current > span").text(gameOptions.score);
+  }
+}
+
+setInterval(updateScore, 100);
 
 // d3.select('body').selectAll('div').data([8, 3, 7])
 //     .enter().append('div').style('opacity', 0)
