@@ -12,19 +12,23 @@ Feel free to use it if you like. */
   border-style: solid;
   height: 100px;
   width: 200px;
-  padding: 15px;
+  padding: 10px;
   font-size: 25px;
   font-family: Helvetica;
+  font-color: white;
   margin: auto;
 
 }
 
 .board {
-  height: 700px;
+  height: 600px;
   width: 700px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  overflow: hidden;
   margin: auto;
   background-image: url("lib/space.jpg");
-  text-align: center;
+  /*text-align: center;*/
 }
 
 .enemy {

@@ -1,82 +1,85 @@
 // start slingin' some d3 here.
 
 var gameOptions = {
-  width: 800,
-  height: 800,
+  width: 1000,
+  height: 1000,
   numEnemies: 40
 };
 
 var gameBoard = d3.select(".board")
                   .append("svg")
+                  .attr("class", "gameBoard")
                   .attr("width", gameOptions.width)
                   .attr("height", gameOptions.height)
-                  .append("g")
-
-var player = gameBoard.append("circle")
-              .attr({
-                id: "player",
-                cx: gameOptions.width/2,
-                cy: gameOptions.height/2,
-                r: 50,
-                fill: "white"
-              });
-
-//-------------enemy----------------
+                  // .append("g");
 
 
-var enemyData = [];
+//-------------enemies----------------
 
 var createEnemies = function(n){
-
-  // var activeEnemies = [];
-  for(var i = 0 ; i < n; i++){
-    // activeEnemies.push(i);
-    enemyData.push({
-      class: "enemy",
-      x: function() { return Math.random() * gameOptions.width; },
-      y: function() { return Math.random() * gameOptions.width; }
-    });
-  }
+  return _.range(0, n).map(function(){
+    return {
+      //'id': i,
+      // class: "enemy",
+      //'x': function() { return Math.random() * gameOptions.width; },
+      //'y': function() { return Math.random() * gameOptions.width; }
+      'x': Math.random()* 800,
+      'y': Math.random()* 800
+    };
+  });
 };
 
-createEnemies(gameOptions.numEnemies);
+var enemies = gameBoard.selectAll("circle")
+                  .data(createEnemies(40))
+                  .enter()
+                  .append("circle")
+                  .attr('class', 'enemy')
+                  .attr('cx',function(e){return e.x;})
+                  .attr('cy',function(e){return e.y;})
+                  .attr('r',10)
+                  .style("fill", "white")
+                  .style("stroke", "grey")
+                  .style("stroke-width", 0.001);
 
-// var createEnemies = function(gameOptions.numEnemies) { 
-
-
-// gameBoard.selectAll("circle")
-//           .data(enemyData) //function(e) {return e.id;})
-//           .enter()
-//           .append("circle")
-//           // .attr('class', 'enemy')
-//           .style("stroke", "red")
-//           .style("stroke-width", 2)
-//           .style("fill", "black")
-//           .attr("cx", )
-//           .attr("cy", function() {return Math.random() * gameOptions.height; })
-//           .attr("r", 10);
-// }
-
-// createEnemies(gameOptions.numEnemies);
+//createEnemies(gameOptions.numEnemies);
 
 
 
+//-------------player----------------
 
-//   enemies = gameBoard.selectAll('enemy').data(enemyData, function(e){return e.id;});
-
-//   enemies.enter().append('svg:circle').attr('class','enemy')
-//                   .attr('cx',function(e){return e.x;})
-//                   .attr('cy',function(e){return e.y;})
-//                   .attr('r',10);
-
-// };
-
+var player = gameBoard.append("circle")
+                      .attr('class', 'player')
+                      .attr('cx', 150)
+                      .attr('cy', 150)
+                      .attr('r', 10)
+                      .style("fill", "red");
 
 
+var move = function() {
+          gameBoard.selectAll('.enemy')
+                   .data(createEnemies(40)) // need this because my var enemies is not returning array of domElements
+                   .transition().duration(1500)
+                   .attr('cx', function(d){return d.x})
+                   .attr('cy', function(d){return d.y});
+};
+setInterval(move, 1000);
 
 
+//-------------make player draggable----------------
 
+var drag = d3.behavior.drag()
+            .on("drag", function(){
+              player.attr('cx', d3.event.x);
+              player.attr('cy', d3.event.y);
+            })
+            .on("dragstart", function(){
+              player.style('opacity', .5);
+            })
+            .on("dragend", function(){
+              player.style('opacity', 1);
+            });
 
+player.call(drag);
 
 // d3.select('body').selectAll('div').data([8, 3, 7])
 //     .enter().append('div').style('opacity', 0)
