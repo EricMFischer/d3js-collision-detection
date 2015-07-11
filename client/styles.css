@@ -21,14 +21,14 @@ Feel free to use it if you like. */
 }
 
 .board {
-  height: 600px;
-  width: 700px;
+  height: 800px;
+  width: 800px;
   /*background-size: 100% 100%;*/
   background-repeat: no-repeat;
   overflow: hidden;
   margin: auto;
   background-image: url("lib/space.jpg");
-  /*text-align: center;*/
+  text-align: center;
 }
 
 .enemy {

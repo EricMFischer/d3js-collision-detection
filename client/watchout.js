@@ -1,10 +1,12 @@
 // start slingin' some d3 here.
 
 var gameOptions = {
-  width: 1000,
-  height: 1000,
+  width: 800,
+  height: 800,
+  radius: 10,
   numEnemies: 40,
-  score: 0
+  score: 0,
+  high: 0
 };
 
 var gameBoard = d3.select(".board")
@@ -50,8 +52,8 @@ var enemies = gameBoard.selectAll("circle")
 
 var player = gameBoard.append("circle")
                       .attr('class', 'player')
-                      .attr('cx', 150)
-                      .attr('cy', 150)
+                      .attr('cx', (gameOptions.width/2 - gameOptions.radius))
+                      .attr('cy', (gameOptions.height/2 - gameOptions.radius))
                       .attr('r', 10)
                       .style("fill", "red");
 
@@ -85,7 +87,25 @@ player.call(drag);
 //-------------collisions----------------
 
 var hasCollision = function() {
-  return false;
+  var collision = false;
+  enemies.each(function() {
+    // get playerX playerY position
+    var playerX = player.attr('cx');
+    var playerY = player.attr('cy');
+    // get enemyX enemyY position
+    var enemyX = d3.select(this).attr('cx');
+    var enemyY = d3.select(this).attr('cy');
+    // x diff
+    // y diff
+    var xDiff = playerX - enemyX;
+    var yDiff = playerY - enemyY;
+    var distance = Math.sqrt(playerX * playerY + enemyX * enemyY);
+    // distance (Pyth. theorem)
+    if (distance < gameOptions.radius) {
+      collision = true;
+    }
+  });
+  return collision;
 }
 
 //-------------scoreboard----------------
@@ -94,9 +114,14 @@ var updateScore = function() {
   if (hasCollision()) {
     gameOptions.score = 0;
     d3.select(".current > span").text(gameOptions.score);
+    d3.select(".collisions > span").text('1');
   } else {
     gameOptions.score++;
     d3.select(".current > span").text(gameOptions.score);
+  }
+  if (gameOptions.high < gameOptions.score) {
+    gameOptions.high = gameOptions.score;
+    d3.select(".high > span").text(gameOptions.high);
   }
 }
 
